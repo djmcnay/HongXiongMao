@@ -17,5 +17,5 @@ setup(
     author_email = 'djmcnay@gmail.com',
     license = 'MIT',
     description='test packaging',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
 )
