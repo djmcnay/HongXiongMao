@@ -6,7 +6,7 @@ badgertools utility functions
 
 """
 
-import config        # API Keys
+import badgertools.config as config        # API Keys
 
 # Dependencies
 import os
