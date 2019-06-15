@@ -5,7 +5,6 @@
 Created on Sat Jun 15 - loitering at Blackbird Bakery in East Dulwich
 
 First attempt at creating a pip installable repo from github
-
 """
 
 from setuptools import setup
