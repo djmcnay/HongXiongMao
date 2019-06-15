@@ -1,3 +1,7 @@
+### Personal .gitignore stuff
+.DS_Store/    # No idea what this is
+
+### Python Defaults as at 15/06/2019
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
