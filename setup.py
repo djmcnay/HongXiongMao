@@ -11,13 +11,12 @@ First attempt at creating a pip installable repo from github
 from setuptools import setup, find_packages
 
 setup(
-    name = 'badgertools',
+    name = 'hongxiongmao',
     version = '0.1dev',
     packages=find_packages(),
     
     # Required Dependencies
     install_requires=['pandas',
-                      'numpy',
                       'sklearn',
                       'plotly',
                       'quandl',
