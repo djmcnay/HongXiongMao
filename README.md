@@ -1,7 +1,9 @@
 ![Placeholder Red Panda Banner from Google till I make my own](https://apps2.wwf.org.hk/pandashop/images/red_panda_banner.jpg)
 # HongXiongMao 红熊猫
 
-hóngxióngmāo (hxm) is a Multi-Asset Portfolio Management toolkit. In the Spirit of dry (don't repeat yourself) coding it is built as the Pythonic lube for my Pontificating Panda chartbook and other Python projects. It is a **work in progress** so I make no promises about the accuracy of any module or model, with that said feel free to fork or adopt any of this code as you see fit (subject to licenses and diclaimers).
+hóngxióngmāo (hxm) is a Multi-Asset Portfolio Management toolkit. In the Spirit of dry (don't repeat yourself) coding it is built as the Pythonic lube for my Pontificating Panda chartbook and other Python projects.
+
+This is a **work in progress** so I make no promises about the accuracy of any module or model, with that said feel free to fork or adopt any of this code as you see fit (subject to licenses and diclaimers).
 
 ## Setup
 We can install or upgrade badgertools directly from github using pip
