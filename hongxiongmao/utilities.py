@@ -6,7 +6,7 @@ badgertools utility functions
 
 """
 
-import badgertools.config as config        # API Keys
+import hongxiongmao.config as config        # API Keys
 
 # Dependencies
 import os
