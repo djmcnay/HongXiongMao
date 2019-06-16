@@ -18,6 +18,7 @@ setup(
     # Required Dependencies
     install_requires=['pandas',
                       'numpy',
+                      'sklearn',
                       'plotly',
                       'quandl',
                       'alpha_vantage',
