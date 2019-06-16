@@ -1,10 +1,7 @@
+![Placeholder Red Panda Banner from Google till I make my own](https://apps2.wwf.org.hk/pandashop/images/red_panda_banner.jpg)
 # HongXiongMao 红熊猫
 
-![Placeholder Red Panda Banner from Google till I make my own](https://apps2.wwf.org.hk/pandashop/images/red_panda_banner.jpg)
-
 In the spirit of dry (don't repeat yourself) programming, I provide hóngxióngmāo (hxm) as the Pythonic lube for my Pontificating Panda chartbook and other Python projects.
-
-
 
 ## Setup
 We can install or upgrade badgertools directly from github using pip
