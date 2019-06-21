@@ -221,7 +221,7 @@ class pokemon_go(object):
         
         if output:
             return self.pokemodel, self.stats, self.data
-        
+    
     def plotlyplot(self, dx=None, output=False):
         """
         Plotly Plot for Pokemon Model
