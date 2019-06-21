@@ -288,9 +288,12 @@ class pokemon_go(object):
             
             # Append Button
             vislist = []                             # Create a list for visible/hidden on args            
+            if j==0: l = len(data)                   # Find len of each key
             for x in range(len(dx.keys())):          # build list of True or Falses for all traces
-                if x == j: vislist.extend([True] * len(data))
-                else: vislist.extend([False] * len(data))
+                if x == j:
+                    vislist.extend([True] * l)
+                else:
+                    vislist.extend([False] * l)
             
             # Actual button stuffs
             button= dict(label= r, method = 'update',
