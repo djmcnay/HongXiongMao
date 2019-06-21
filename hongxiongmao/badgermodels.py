@@ -5,7 +5,7 @@
 import numpy as np
 import pandas as pd
 
-from utilities import tools, download
+from hongxiongmao.utilities import tools, download
 
 # %% POKEMON
 
@@ -110,11 +110,9 @@ class pokemon(object):
         region = self.region if region is None else region
         self.pull_data_from_quandl(region=region, start_date=start_date)
         self.pokemon(window=rolling_window)
-        
         return
     
     # %% Import Data
-        
     def pull_data_from_quandl(self, region='US', 
                               start_date='25y', freq='monthly',
                               output=False):
@@ -199,16 +197,4 @@ class pokemon(object):
             self.stats_full = stats.loc['full_sample',:]
             self.stats_roll = stats.iloc[1:,:]
     
-    pass    # END of Pokemon model
-    
-# %% TEST
-    
-us = pokemon(region='US')
-us.pokemon_run()
-us.pokemon
-
-# %%
-
-us.pokemodel
-    
-    
+    pass    # END of Pokemon model    
