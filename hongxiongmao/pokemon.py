@@ -204,7 +204,7 @@ class pokemon_go(object):
         self.regions = regions
         self.data, self.stats, self.pokemodel = [dict.fromkeys(regions)] * 3
 
-    def download_and_run(self, output=False):
+    def download_and_run(self, plot=False, output=False):
         """
         Iterate through self.regions, download Quandl data & run Pokemon model
         Store all data in self.data, self.stats & self.pokemodel
@@ -219,6 +219,9 @@ class pokemon_go(object):
             self.stats[r] = {'full':x.stats_full, 'rolling':x.stats_roll}
             self.pokemodel[r] = x.pokemodel
         
+        if plot:
+            self.plotlyplot()
+            
         if output:
             return self.pokemodel, self.stats, self.data
     
