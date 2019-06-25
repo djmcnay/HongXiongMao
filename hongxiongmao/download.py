@@ -11,14 +11,9 @@ Provides high level wrappers for data providers, currently:
 
 # %%
 
-import os
-import numpy as np
 import pandas as pd
-import datetime as dt
 from time import sleep
-
-# HXM Dependencies
-import utilities
+import utilities        # From HXM
 
 # %% QUANDL
 

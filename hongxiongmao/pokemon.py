@@ -33,7 +33,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 
 # Homemade Dependencies
-from hongxiongmao.utilities import tools, download
+from hongxiongmao import utilities, download
 
 # %%
 
@@ -119,6 +119,8 @@ class pokemon(object):
         Download Pokemon Data from Quandl
         """
         
+        dl = download.quandl_hxm()
+        
         # Select relevant dictionary from regional input
         if region in list(self.quandl_dicts.keys()):
             tick_dic = self.quandl_dicts[region]
@@ -129,14 +131,14 @@ class pokemon(object):
         # Iterate through dictionary & pull data
         for i, v in enumerate(tick_dic.items()):
             j = tick_dic[v[0]]
-            x = download().quandl_ts(tickers=j['tickers'], fields=j['fields'],
-                                  start_date=start_date, freq=freq)
+            x = dl.timeseries(tickers=j['tickers'], fields=j['fields'],
+                              start_date=start_date, freq=freq)
             
             x.columns = [v[0]]    # Update column header with dictionary key
             
             # Merge new Dataframe output df
             if i == 0: data = x
-            else: data = tools().df_merger(data, x)
+            else: data = utilities.df_merger(data, x)
         
         # output determines if we return data or set attribute
         if output: return data
