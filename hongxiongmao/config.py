@@ -6,5 +6,5 @@ Config File for badgertools
 """
 
 # API KEYS
-api_quandl = '-gP4AZzsup26hKNAcsv2'
-api_alphavantage = 'Q86GW9HL1R360XW1'
+API_QUANDL = '-gP4AZzsup26hKNAcsv2'
+API_ALPHAVANTAGE = 'Q86GW9HL1R360XW1'

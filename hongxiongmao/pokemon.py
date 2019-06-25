@@ -25,6 +25,7 @@ can find whilst limiting to Quandl datasets.
 CLASS MODULES:
     pokemon - acts on a single region or set of data
     pokemon_go - combines multiple regions
+    
 """
 
 import numpy as np
@@ -145,6 +146,16 @@ class pokemon(object):
     def model(self, df=None, window=36, valiadate_data=True, output=False):
         """
         Pokemon Fair Value Model
+        
+        INPUT:
+            df - df with long-bond in col0; regression parameters in cols 1+
+            window - 36(default) rolling period window for regression
+            validate_date - True(default)|False forward fill missing data
+        
+        OUTPUT:
+            self.pokemodel - model output
+            self.stats_full - regression stats for full period data
+            self.stats_roll - same but rolling
         """
         
         # Use internal data attribute if None is provided
@@ -219,9 +230,8 @@ class pokemon_go(object):
             self.stats[r] = {'full':x.stats_full, 'rolling':x.stats_roll}
             self.pokemodel[r] = x.pokemodel
         
-        if plot:
-            self.plotlyplot()
-            
+        if plot: self.plotlyplot()    # plotly dict
+        
         if output:
             return self.pokemodel, self.stats, self.data
     
@@ -274,8 +284,7 @@ class pokemon_go(object):
             # Top plot - Absolute
             for i, n in enumerate(['full_sample', 'rolling', 'long_bond']):
                 data.append(dict(type='scatter', name=n, xaxis='x1', yaxis='y1',
-                                 x=dx[r].index,
-                                 y=dx[r].iloc[:,i],
+                                 x=dx[r].index, y=dx[r].iloc[:,i],
                                  visible=True if j==0 else False,
                                  showlegend=True,
                                  line=dict(color=cmap[i], width=linewidth[0]),))
@@ -283,8 +292,7 @@ class pokemon_go(object):
             # Bottom plot - Relative to Long Bond
             for i, n in enumerate(['full_sample', 'rolling']):
                 data.append(dict(type='scatter', name=n, xaxis='x2', yaxis='y2',
-                                 x=dx[r].index,
-                                 y=dx[r].iloc[:,2]-dx[r].iloc[:,i],
+                                 x=dx[r].index, y=dx[r].iloc[:,2]-dx[r].iloc[:,i],
                                  visible=True if j==0 else False,
                                  fill='tozeroy', showlegend=False,
                                  line=dict(color=cmap[i], width=linewidth[0])))
