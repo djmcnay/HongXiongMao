@@ -173,7 +173,7 @@ class alphavantage(object):
             self.API_KEY = API_KEY
         
         # Configure API Keys for AV Modules
-        self.ts = self.TimeSeries(key=API_KEY, output_format='pandas', retries=1000)
+        self.ts = self.TimeSeries(key=self.API_KEY, output_format='pandas', retries=1000)
         
         return
         
