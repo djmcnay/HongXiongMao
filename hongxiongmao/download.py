@@ -31,7 +31,7 @@ class quandl_hxm(object):
         if 'API' in kwargs.keys():
             self.API_KEY = kwargs['API']
         else:
-            from hongxiongmao.config import API_QUANDL as API_KEY
+            from config import API_QUANDL as API_KEY
             self.API_KEY = API_KEY
             
         self.quandl.ApiConfig.api_key = self.API_KEY
@@ -169,12 +169,11 @@ class alphavantage(object):
         if 'API' in kwargs.keys():
             self.API_KEY = kwargs['API']
         else:
-            from hongxiongmao.config import API_ALPHAVANTAGE as API_KEY
+            from config import API_ALPHAVANTAGE as API_KEY
             self.API_KEY = API_KEY
         
         # Configure API Keys for AV Modules
-        self.ts = self.TimeSeries(key=self.API_KEY, output_format='pandas', retries=1000)
-        
+        self.ts = self.TimeSeries(key=self.API_KEY, output_format='pandas', retries=10000)
         return
         
     # %%
