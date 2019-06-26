@@ -180,7 +180,7 @@ class alphavantage(object):
     # %%
     
      # AlphaVantage Static Dictionary
-    av_tickers = {
+    us_etfs = {
         'MXWD':dict(ticker='ACWI', name='iShares MSCI ACWI ETF'),
         'SPX':dict(ticker='SPY', name='SPDR S&P 500 ETF'),
         'EAFE':dict(ticker='VEA', name='Vanguard FTSE Developed Markets ex US ETF'),
@@ -198,34 +198,7 @@ class alphavantage(object):
         'USD':dict(ticker='SHV', name='iShares Short Treasury Bond ETF'),
         }
     
-    # %%
-    
-    # AlphaVantage default OHLC timeseries
-    def update_alphavantage_ts(self, output_size='compact', output=True,
-                               filename=None, path=None):
-        """
-        Calls full default ticker list from AlphaVantage and stores OHLC Data.
-        Then updates pickle file from data/ directory using left-blend
-        """
-        
-        # Create lists of variable names and tickers from av_tickers dict
-        varnames = list(self.av_tickers.keys())
-        tickers = []
-        for v in varnames:
-            tickers.append(self.av_tickers[v]['ticker'])
-            
-        # Call data from AV
-        b = self.timeseries(tickers, varnames, freq='d', output_size=output_size)
-        
-        # Update data store
-        filename='data_alphavantage_daily'
-        a = utilities.picklemerger(filename=filename, b=b, blend='left',
-                           path='data', create_new=False, output=True)
-        
-        if output: return a
-        else: return
-    
-    # %%
+    # %% Download from AV Ticker Dictionary
     
     def dl_from_ticker_dict(self, ticker_dict, freq='d', output_size='compact'):
         """ 
