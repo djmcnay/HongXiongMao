@@ -69,8 +69,7 @@ def _df_merger_helper_func(x, blend='mean'):
 
 # %% DATE FUNCTIONS
         
-def relative_date(r='12m', end_date='today',
-                  date_format='%Y-%m-%d', as_string=False):
+def relative_date(r='12m', end_date='today', date_format='%Y-%m-%d', as_string=False):
     """
     Relative Date function
     

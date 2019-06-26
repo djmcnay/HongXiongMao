@@ -13,7 +13,7 @@ Provides high level wrappers for data providers, currently:
 
 import pandas as pd
 from time import sleep
-import utilities        # From HXM
+from hongxiongmao import utilities        # From HXM
 
 # %% QUANDL
 
