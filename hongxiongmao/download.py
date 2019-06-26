@@ -303,5 +303,9 @@ class alphavantage(object):
                 data['high'] = pd.concat([data['high'], dl.loc[:,'2. high'].rename(varname[i])], axis=1, sort=True)
                 data['low'] = pd.concat([data['low'], dl.loc[:,'3. low'].rename(varname[i])], axis=1, sort=True)
                 data['close'] = pd.concat([data['close'], dl.loc[:,'4. close'].rename(varname[i])], axis=1, sort=True)
-                
+            
+            # Attempting to put in a break between calls to help with latency
+            print('AlphaVantage call on {} downloaded'.format(t))
+            sleep(2)
+            
         return data
