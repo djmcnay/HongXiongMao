@@ -40,5 +40,3 @@ def principal_drivers_index(df, n=26, px=True, min_assets=0.5):
         cum.iloc[i, 0:len(eig)] = np.cumsum(eig)                  # cumulative sum of eigenvalues
         
     return pcr, cum, cor
-
-principal_drivers_index(x['close'])
