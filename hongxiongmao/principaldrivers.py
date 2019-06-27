@@ -44,6 +44,21 @@ class pdi(object):
         else:
             raise ValueError ('ts takes df object; {} sent'.format(type(data)))
     
+    def run(self, n=26, min_assets=0.5):
+        """
+        Consolidated function to run default PDI analysis
+            1. Run PDI to get the PDI itself, eigenvalues & correlation matrix
+            2. make plot and save in self.plot
+        
+        NB/ Assumes timeseries data is passed & available in self.ts
+            later build an import/download option into function
+        
+        """
+        self.principal_drivers_index(n=n, min_assets=min_assets)
+        self.plotly_pdi(animations=True)
+        
+        return
+    
     # %% PDI Calculations
     
     def principal_drivers_index(self, df=None, n=26, px=True, min_assets=0.5, output=False):
