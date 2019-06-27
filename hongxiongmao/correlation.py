@@ -35,7 +35,7 @@ def duo_dendrogram_mpl(df, px=True, n=[260, 13], output=False):
     from scipy.spatial.distance import pdist
     
     # Setup figure
-    fig = plt.figure(figsize=(7.5, 3.5), dpi=300)
+    fig = plt.figure(figsize=(7.5, 3.5), dpi=600)
     plt.tight_layout()
     fig.suptitle('Dendrogram of weekly Correlations', fontsize=12)
     plt.rcParams['font.family'] = "Courier New"
