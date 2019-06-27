@@ -8,6 +8,7 @@ Created on Wed Jun 26 23:20:28 2019
 import pickle
 from download import alphavantage as av
 import utilities
+import badgermodels as bm
 
 # %%
 
@@ -30,3 +31,4 @@ a = pickle.load(infile)
 infile.close()
 
 px = utilities.daily2weekly(a['close'])
+pcr,_,_= bm.principal_drivers_index(px)
