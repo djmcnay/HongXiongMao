@@ -199,4 +199,4 @@ class pdi(object):
         if output:
             return fig
         else:
-            self.plotlyplot = fig
+            self.plot = fig
