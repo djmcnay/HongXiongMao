@@ -173,28 +173,30 @@ class alphavantage(object):
             self.API_KEY = API_KEY
         
         # Configure API Keys for AV Modules
-        self.ts = self.TimeSeries(key=self.API_KEY, output_format='pandas', retries=10000)
+        self.ts = self.TimeSeries(key=self.API_KEY, output_format='pandas', retries=100000)
         return
         
     # %%
     
      # AlphaVantage Static Dictionary
     us_etfs = {
-        'MXWD':dict(ticker='ACWI', name='iShares MSCI ACWI ETF'),
-        'SPX':dict(ticker='SPY', name='SPDR S&P 500 ETF'),
-        'EAFE':dict(ticker='VEA', name='Vanguard FTSE Developed Markets ex US ETF'),
-        'MXEF':dict(ticker='IEMG', name='iShares Core MSCI Emerging Markets ETF'),
-        'CSI300':dict(ticker='ASHR', name='Xtrackers Harvest CSI 300 China A-Shares ETF'),
-        'REITS':dict(ticker='IYR', name='iShares U.S. Real Estate ETF'),
-        'US_Agg':dict(ticker='AGG', name='iShares Core U.S. Aggregate Bond ETF'),
-        'US_Govt':dict(ticker='GOVT', name='iShares U.S. Treasury Bond ETF'),
-        'TIPS':dict(ticker='TIP', name='iShares TIPS Bond ETF'),
-        'US_IG':dict(ticker='LQD', name='iShares iBoxx $ IG Corporate Bond ETF'),
-        'US_HY':dict(ticker='HYG', name='iShares iBoxx $ HY Corporate Bond ETF'),
-        'EMD_Hard':dict(ticker='EMB', name='iShares J.P. Morgan USD Emerging Markets Bond ETF'),
-        'EMD_Local':dict(ticker='EMLC', name='VanEck Vectors J.P. Morgan EM Local Currency Bond ETF'),
-        'GOLD':dict(ticker='GLD', name='SPDR Gold Trust'),
-        'USD':dict(ticker='SHV', name='iShares Short Treasury Bond ETF'),
+        'ACWI':dict(ticker='ACWI', name='iShares MSCI ACWI ETF'),
+        'SPY':dict(ticker='SPY', name='SPDR S&P 500 ETF'),
+        'QQQ':dict(ticker='QQQ', name='INVESCO QQQ TRUST QQQ USD DIS'),
+        'VEA':dict(ticker='VEA', name='Vanguard FTSE Developed Markets ex US ETF'),
+        'IEMG':dict(ticker='IEMG', name='iShares Core MSCI Emerging Markets ETF'),
+        'VWO':dict(ticker='VWO', name='Vanguard FTSE Emerging Markets ETF'),
+        'ASHR':dict(ticker='ASHR', name='Xtrackers Harvest CSI 300 China A-Shares ETF'),
+        'VNQ':dict(ticker='VNQ', name='Vanguard US Real Estate Index Fund'),
+        'AGG':dict(ticker='AGG', name='iShares Core U.S. Aggregate Bond ETF'),
+        'GOVT':dict(ticker='GOVT', name='iShares U.S. Treasury Bond ETF'),
+        'TIP':dict(ticker='TIP', name='iShares TIPS Bond ETF'),
+        'LQD':dict(ticker='LQD', name='iShares iBoxx $ IG Corporate Bond ETF'),
+        'HYG':dict(ticker='HYG', name='iShares iBoxx $ HY Corporate Bond ETF'),
+        'EMB':dict(ticker='EMB', name='iShares J.P. Morgan USD Emerging Markets Bond ETF'),
+        'EMLC':dict(ticker='EMLC', name='VanEck Vectors J.P. Morgan EM Local Currency Bond ETF'),
+        'GLD':dict(ticker='GLD', name='SPDR Gold Trust'),
+        'BIL':dict(ticker='BIL', name='SPDR Barclays 1-3 Month T-Bill ETF'),
         }
     
     # %% Download from AV Ticker Dictionary
@@ -278,6 +280,5 @@ class alphavantage(object):
             
             # Attempting to put in a break between calls to help with latency
             print('AlphaVantage call on {} downloaded'.format(t))
-            sleep(2)
             
         return data
