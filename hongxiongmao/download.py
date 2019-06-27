@@ -256,7 +256,7 @@ class alphavantage(object):
 
             # Seconds gaps in case of latency problems on multiple av calls
             # mostly remediated by the retries thing but does cause some issues
-            for gap in [1, 2, 3, 5, 10, 15, 20, 30, 45]:
+            for gap in [5, 10, 15, 20, 30, 45]:
                 try:
                     dl, _ = api(t, outputsize=output_size)    # AlphaVantage Call
                     break
