@@ -17,8 +17,9 @@ setup(
     
     # Required Dependencies
     install_requires=['pandas',
+                      'scipy',
                       'sklearn',
-                      'plotly',
+                      'plotly', 'plotly_express',
                       'quandl',
                       'alpha_vantage',
                       ],
