@@ -35,7 +35,7 @@ def scatter_from_dataframe(df, title='', ytitle='', **kwargs):
     ## Basic Layout Dictionary
     # Needs to come first or buttons have nowhere to append too
     layout=dict(title=title, font = {'family':'Courier New', 'size':12},
-                showlegend = True, legend=dict(orientation="h"),
+                showlegend = True, legend=dict(orientation="v"),
                 margin = {'l':75, 'r':50, 'b':50, 't':50},
                 yaxis={'title':ytitle, 'hoverformat':'.2f', 'tickformat':'.2f',},
                 updatemenus= [dict(type='buttons', active=0, showactive = True,

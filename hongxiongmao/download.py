@@ -60,6 +60,26 @@ class quandl_hxm(object):
         'VIX':dict(ticker='CHRIS/CBOE_VX', term=9, field='Settle', name='Vix'),
         }
     
+    # Normalised OECD Composite Leading Indicators
+    oecd_cli = {
+        'OECD':dict(ticker='OECD/MEI_CLI_LOLITONO_OECD_M', field=[], name='Normalised (Cli), OECD Total'),
+        'US':dict(ticker='OECD/MEI_CLI_LOLITONO_USA_M', field=[], name='Normalised (Cli), United States'),
+        'UK':dict(ticker='OECD/MEI_CLI_LOLITONO_GBR_M', field=[], name='Normalised (Cli), United Kingdon'),
+        'EURO':dict(ticker='OECD/MEI_CLI_LOLITONO_OECDE_M', field=[], name='Normalised (Cli), Europe'),
+        'JAPAN':dict(ticker='OECD/MEI_CLI_LOLITONO_JPN_M', field=[], name='Normalised (Cli), Japan'),
+        'AUS':dict(ticker='OECD/MEI_CLI_LOLITONO_AUS_M', field=[], name='Normalised (Cli), Australia'),
+        'CANADA':dict(ticker='OECD/MEI_CLI_LOLITONO_CAN_M', field=[], name='Normalised (Cli), Canada'),
+        'CHINA':dict(ticker='OECD/MEI_CLI_LOLITONO_CHN_M', field=[], name='Normalised (Cli), China'),
+        'INDIA':dict(ticker='OECD/MEI_CLI_LOLITONO_IND_M', field=[], name='Normalised (Cli), India'),
+        'RUSSIA':dict(ticker='OECD/MEI_CLI_LOLITONO_RUS_M', field=[], name='Normalised (Cli), Russia'),
+        'BRAZIL':dict(ticker='OECD/MEI_CLI_LOLITONO_BRA_M', field=[], name='Normalised (Cli), Brazil'),
+        'MEXICO':dict(ticker='OECD/MEI_CLI_LOLITONO_MEX_M', field=[], name='Normalised (Cli), Mexio'),
+        'KOREA':dict(ticker='OECD/MEI_CLI_LOLITONO_KOR_M', field=[], name='Normalised (Cli), KOREA'),
+        'TURKEY':dict(ticker='OECD/MEI_CLI_LOLITONO_TUR_M', field=[], name='Normalised (Cli), Turkey'),
+        'ZAR':dict(ticker='OECD/MEI_CLI_LOLITONO_ZAF_M', field=[], name='Normalised (Cli), South Africa'),
+        'ASIA5':dict(ticker='OECD/MEI_CLI_LOLITONO_A5M_M', field=[], name='Normalised (Cli), Major 5 Asia'),
+        }
+    
     # %% TIMESERIES DOWNLOAD
     
     def timeseries(self, tickers, fields=[], **kwargs):
