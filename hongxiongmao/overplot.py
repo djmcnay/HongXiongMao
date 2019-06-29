@@ -39,8 +39,8 @@ def scatter_from_dataframe(df, title='', ytitle='', **kwargs):
                 margin = {'l':75, 'r':50, 'b':50, 't':50},
                 yaxis={'title':ytitle, 'hoverformat':'.2f', 'tickformat':'.2f',},
                 updatemenus= [dict(type='buttons', active=0, showactive = True,
-                                         direction='right', pad = {'l':0, 'r':35, 't':0, 'b':0},
-                                         y=-0.1, x=1,
+                                         direction='right', pad = {'l':0, 'r':0, 't':0, 'b':0},
+                                         y=0.25, x=1.1,
                                          buttons=[])],
                )
     
