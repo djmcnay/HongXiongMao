@@ -62,23 +62,53 @@ class quandl_hxm(object):
     
     # Normalised OECD Composite Leading Indicators
     oecd_cli = {
-        'OECD':dict(ticker='OECD/MEI_CLI_LOLITONO_OECD_M', field=[], name='Normalised (Cli), OECD Total'),
-        'US':dict(ticker='OECD/MEI_CLI_LOLITONO_USA_M', field=[], name='Normalised (Cli), United States'),
-        'UK':dict(ticker='OECD/MEI_CLI_LOLITONO_GBR_M', field=[], name='Normalised (Cli), United Kingdon'),
-        'EURO':dict(ticker='OECD/MEI_CLI_LOLITONO_OECDE_M', field=[], name='Normalised (Cli), Europe'),
-        'JAPAN':dict(ticker='OECD/MEI_CLI_LOLITONO_JPN_M', field=[], name='Normalised (Cli), Japan'),
-        'AUS':dict(ticker='OECD/MEI_CLI_LOLITONO_AUS_M', field=[], name='Normalised (Cli), Australia'),
-        'CANADA':dict(ticker='OECD/MEI_CLI_LOLITONO_CAN_M', field=[], name='Normalised (Cli), Canada'),
-        'CHINA':dict(ticker='OECD/MEI_CLI_LOLITONO_CHN_M', field=[], name='Normalised (Cli), China'),
-        'INDIA':dict(ticker='OECD/MEI_CLI_LOLITONO_IND_M', field=[], name='Normalised (Cli), India'),
-        'RUSSIA':dict(ticker='OECD/MEI_CLI_LOLITONO_RUS_M', field=[], name='Normalised (Cli), Russia'),
-        'BRAZIL':dict(ticker='OECD/MEI_CLI_LOLITONO_BRA_M', field=[], name='Normalised (Cli), Brazil'),
-        'MEXICO':dict(ticker='OECD/MEI_CLI_LOLITONO_MEX_M', field=[], name='Normalised (Cli), Mexio'),
-        'KOREA':dict(ticker='OECD/MEI_CLI_LOLITONO_KOR_M', field=[], name='Normalised (Cli), KOREA'),
-        'TURKEY':dict(ticker='OECD/MEI_CLI_LOLITONO_TUR_M', field=[], name='Normalised (Cli), Turkey'),
-        'ZAR':dict(ticker='OECD/MEI_CLI_LOLITONO_ZAF_M', field=[], name='Normalised (Cli), South Africa'),
-        'ASIA5':dict(ticker='OECD/MEI_CLI_LOLITONO_A5M_M', field=[], name='Normalised (Cli), Major 5 Asia'),
+        'OECD':dict(ticker='OECD/MEI_CLI_LOLITONO_OECD_M', name='Normalised (Cli), OECD Total'),
+        'US':dict(ticker='OECD/MEI_CLI_LOLITONO_USA_M', name='Normalised (Cli), United States'),
+        'UK':dict(ticker='OECD/MEI_CLI_LOLITONO_GBR_M', name='Normalised (Cli), United Kingdon'),
+        'EURO':dict(ticker='OECD/MEI_CLI_LOLITONO_OECDE_M', name='Normalised (Cli), Europe'),
+        'JAPAN':dict(ticker='OECD/MEI_CLI_LOLITONO_JPN_M', name='Normalised (Cli), Japan'),
+        'AUS':dict(ticker='OECD/MEI_CLI_LOLITONO_AUS_M', name='Normalised (Cli), Australia'),
+        'CANADA':dict(ticker='OECD/MEI_CLI_LOLITONO_CAN_M', name='Normalised (Cli), Canada'),
+        'CHINA':dict(ticker='OECD/MEI_CLI_LOLITONO_CHN_M', name='Normalised (Cli), China'),
+        'INDIA':dict(ticker='OECD/MEI_CLI_LOLITONO_IND_M', name='Normalised (Cli), India'),
+        'RUSSIA':dict(ticker='OECD/MEI_CLI_LOLITONO_RUS_M', name='Normalised (Cli), Russia'),
+        'BRAZIL':dict(ticker='OECD/MEI_CLI_LOLITONO_BRA_M', name='Normalised (Cli), Brazil'),
+        'MEXICO':dict(ticker='OECD/MEI_CLI_LOLITONO_MEX_M', name='Normalised (Cli), Mexio'),
+        'KOREA':dict(ticker='OECD/MEI_CLI_LOLITONO_KOR_M', name='Normalised (Cli), KOREA'),
+        'TURKEY':dict(ticker='OECD/MEI_CLI_LOLITONO_TUR_M', name='Normalised (Cli), Turkey'),
+        'ZAR':dict(ticker='OECD/MEI_CLI_LOLITONO_ZAF_M', name='Normalised (Cli), South Africa'),
+        'ASIA5':dict(ticker='OECD/MEI_CLI_LOLITONO_A5M_M', name='Normalised (Cli), Major 5 Asia'),
         }
+    
+    def from_tickerdict(self, td, **kwargs):
+        """
+        Make Quandl call from Ticker Dictionary
+        
+        Where dictionary is of the form:
+            {'VARNAME':{'ticker':'QUANDL_TICKER', 'fields':[]}}
+        
+        INPUTS:
+            td - ticker_dictionary either as dictionary (as above) or string, where
+                 string referes to an attribute that is a pre-loaded dictionary
+            kwargs - for timeseries call; further details look at that function
+            
+        """
+        
+        # Set ticker dictionary from internal attributes if string provided
+        td = getattr(self, td) if isinstance(td, str) else td
+        
+        # List of tickers from ticker dictionary
+        tickers = [td[k]['ticker'] for k in td]
+        
+        # Make Call
+        x = self.timeseries(tickers=tickers, **kwargs)
+        
+        # Rename columns to dictionary keys
+        # Currently only works if 1 field per ticker
+        if x.shape[1] == 16:
+            x.columns = list(td.keys())
+        
+        return x
     
     # %% TIMESERIES DOWNLOAD
     
