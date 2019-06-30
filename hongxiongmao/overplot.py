@@ -12,6 +12,7 @@ weird charts I wanted to build, but could be repeated.
 
 import numpy as np
 import pandas as pd
+import copy
 
 COLOURMAP = {0:'purple', 1:'turquoise', 2:'grey', 3:'black', 4:'lime', 5:'blue', 6:'orange', 7:'red'}
 
@@ -66,8 +67,7 @@ def _update_layout(layout, **kwargs):
         layout['updatemenus'][0]['x'] = v[0]
         layout['updatemenus'][0]['y'] = v[1]
         if len(v) > 2:
-               
-            layout['updatemenus'][0]['pad']={'l':v[3],'r':v[4],'t':v[5],'b':v[6]}
+            layout['updatemenus'][0]['pad']={'l':v[2],'r':v[3],'t':v[4],'b':v[5]}
     
     # Button Direction
     if 'button_direction' in kwargs:
@@ -93,7 +93,7 @@ def scatter_from_dataframe(df, **kwargs):
     
     # Bring in Defaults from Global
     cmap=COLOURMAP
-    layout=DEFAULT_LAYOUT
+    layout=copy.deepcopy(DEFAULT_LAYOUT)
     
     ## Basic Layout Dictionary
     # Needs to come first or buttons have nowhere to append too
@@ -117,4 +117,6 @@ def scatter_from_dataframe(df, **kwargs):
             button= dict(label=g, method='update', args=[{'visible': visible}])
             layout['updatemenus'][0]['buttons'].append(button)    # append the button 
 
-    return dict(data=data, layout=layout)
+    fig = dict(data=data, layout=layout)
+
+    return fig
