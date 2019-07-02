@@ -183,6 +183,11 @@ def swirlygram(df, n=3, trail=18, quadrants=True, **kwargs):
     
     ### Additional Layout Changes
     
+    # Additional Button to make all visible
+    visible=[True] * l * len(df.columns) 
+    button= dict(label='All', method='update', args=[{'visible': visible},])
+    layout['updatemenus'][0]['buttons'].append(button)     # append the button 
+    
     # Symmetrical Plot around zero
     absmax = lambda df, x=1: np.max([df.abs().max().max(), x]) * 1.05    
     layout['xaxis']['range'] = [-absmax(x), absmax(x)]
