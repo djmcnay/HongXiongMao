@@ -232,22 +232,6 @@ def swirlygram(df, n=3, trail=18, quadrants=True, **kwargs):
     
     # Rectangles of colour for each quadrant
     if quadrants:
-        shapes = [{'type':'rect', # Top Right
-                   'xref':'x', 'x0':0, 'x1':100,
-                   'yref':'y', 'y0':0, 'y1':100,
-                   'line':{'width': 0,},'fillcolor':'green', 'opacity': 0.1,},    
-                  {'type':'rect', # Bottom Left
-                   'xref':'x', 'x0':-100, 'x1':0, 
-                   'yref':'y', 'y0':-100, 'y1':0,
-                   'line':{'width': 0,}, 'fillcolor':'red', 'opacity': 0.1,},    
-                  {'type':'rect', # Top Left
-                   'xref':'x', 'x0':-100, 'x1':0,
-                   'yref':'y', 'y0':0, 'y1':100, 
-                   'line':{'width': 0,}, 'fillcolor':'blue', 'opacity': 0.1,},
-                  {'type': 'rect', # Bottom Right
-                   'xref':'x', 'x0':0, 'x1':100,
-                   'yref':'y', 'y0':-100, 'y1':0,
-                   'line':{'width': 0,}, 'fillcolor':'orange', 'opacity': 0.1,},]
-        layout['shapes'] = shapes
+        layout = _quadrants(layout, x=0, y=0)
     
     return dict(data=data, layout=layout)
