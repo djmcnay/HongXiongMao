@@ -1,5 +1,7 @@
 ### Personal .gitignore stuff
-.DS_Store/    # No idea what this is
+.DS_Store/       # No idea what this is
+_testspace.py    # Testzone in SPyder that doesn't need to be in repo
+test-plot.html   # default Plotly test name
 
 ### Python Defaults as at 15/06/2019
 # Byte-compiled / optimized / DLL files
