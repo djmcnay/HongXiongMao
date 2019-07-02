@@ -75,6 +75,43 @@ def _update_layout(layout, **kwargs):
     
     return layout
 
+# %%
+    
+def _quadrants(layout, x=0, y=0, z=100, opacity=0.1,
+               colours=['green', 'orange', 'red', 'blue']):
+    """
+    Quandrants adds 4 quadrant to plot around specified point (default is 0,0)
+    """
+    
+    # Create List of shapes for Plotly Layout & add 4x rectangles
+    shapes = [{'type':'rect', # Top Right
+               'xref':'x', 'x0':x, 'x1':z,
+               'yref':'y', 'y0':y, 'y1':z,
+               'line':{'width': 0,},'fillcolor':colours[0], 'opacity':opacity,},
+              {'type': 'rect', # Bottom Right
+               'xref':'x', 'x0':x, 'x1':z,
+               'yref':'y', 'y0':-z, 'y1':y,
+               'line':{'width': 0,}, 'fillcolor':colours[1], 'opacity':opacity,},    
+              {'type':'rect', # Bottom Left
+               'xref':'x', 'x0':-z, 'x1':x, 
+               'yref':'y', 'y0':-z, 'y1':y,
+               'line':{'width': 0,}, 'fillcolor':colours[2], 'opacity':opacity,},    
+              {'type':'rect', # Top Left
+               'xref':'x', 'x0':-z, 'x1':x,
+               'yref':'y', 'y0':y, 'y1':z, 
+               'line':{'width': 0,}, 'fillcolor':colours[3], 'opacity':opacity,},
+]
+    
+    # If 'shapes' not in layout we need to add list
+    # otherwise we append each of our rectangles in turn
+    if 'shapes' in layout.keys():
+        for r in shapes:
+            layout['shapes'].append(r)
+    else:
+        layout['shapes'] = shapes
+
+    return layout
+
 # %% Scatter Plot from Dataframe with Group Buttons
 
 def scatter_from_dataframe(df, **kwargs):
