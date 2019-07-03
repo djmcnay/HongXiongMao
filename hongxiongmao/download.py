@@ -80,6 +80,26 @@ class quandl_hxm(object):
         'ASIA5':dict(ticker='OECD/MEI_CLI_LOLITONO_A5M_M', name='Normalised (Cli), Major 5 Asia'),
         }
     
+        # Normalised OECD Composite Leading Indicators
+    oecd_normalised_gdp = {
+        'OECD':dict(ticker='OECD/MEI_CLI_LORSGPNO_OECD_M', name='Normalised (GDP), OECD Total'),
+        'US':dict(ticker='OECD/MEI_CLI_LORSGPNO_USA_M', name='Normalised (GDP), United States'),
+        'UK':dict(ticker='OECD/MEI_CLI_LORSGPNO_GBR_M', name='Normalised (GDP), United Kingdon'),
+        'EURO':dict(ticker='OECD/MEI_CLI_LORSGPNO_OECDE_M', name='Normalised (GDP), Europe'),
+        'JAPAN':dict(ticker='OECD/MEI_CLI_LORSGPNO_JPN_M', name='Normalised (GDP), Japan'),
+        'AUS':dict(ticker='OECD/MEI_CLI_LORSGPNO_AUS_M', name='Normalised (GDP), Australia'),
+        'CANADA':dict(ticker='OECD/MEI_CLI_LORSGPNO_CAN_M', name='Normalised (GDP), Canada'),
+        'CHINA':dict(ticker='OECD/MEI_CLI_LORSGPNO_CHN_M', name='Normalised (GDP), China'),
+        'INDIA':dict(ticker='OECD/MEI_CLI_LORSGPNO_IND_M', name='Normalised (GDP), India'),
+        'RUSSIA':dict(ticker='OECD/MEI_CLI_LORSGPNO_RUS_M', name='Normalised (GDP), Russia'),
+        'BRAZIL':dict(ticker='OECD/MEI_CLI_LORSGPNO_BRA_M', name='Normalised (GDP), Brazil'),
+        'MEXICO':dict(ticker='OECD/MEI_CLI_LORSGPNO_MEX_M', name='Normalised (GDP), Mexio'),
+        'KOREA':dict(ticker='OECD/MEI_CLI_LORSGPNO_KOR_M', name='Normalised (GDP), KOREA'),
+        'TURKEY':dict(ticker='OECD/MEI_CLI_LORSGPNO_TUR_M', name='Normalised (GDP), Turkey'),
+        'ZAR':dict(ticker='OECD/MEI_CLI_LORSGPNO_ZAF_M', name='Normalised (GDP), South Africa'),
+        'ASIA5':dict(ticker='OECD/MEI_CLI_LORSGPNO_A5M_M', name='Normalised (GDP), Major 5 Asia'),
+        }
+    
     def from_tickerdict(self, td, **kwargs):
         """
         Make Quandl call from Ticker Dictionary
