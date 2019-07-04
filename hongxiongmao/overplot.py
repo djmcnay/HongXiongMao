@@ -32,6 +32,23 @@ DEFAULT_LAYOUT = dict(title='Title',
                                          buttons=[])],
                       annotations=[],)
 
+# Slider on bottom of chart covering whole width
+DEFAULT_SLIDERS = {'yanchor':'top', 'xanchor':'left', 
+                   'currentvalue': {'font':{'size':12}, 'prefix':'Date: ', 'xanchor':'left'},
+                   'transition': {'duration': 500, 'easing': 'linear'},
+                   'pad': {'b': 0, 't': 25}, 'len': 1, 'x': 0, 'y': 0,
+                   'steps':[]}
+
+# Play & Pause Buttons
+DEFAULT_PLAYPAUSE = [{'label': 'Play', 'method': 'animate',
+                      'args':[None, {'frame':{'duration':0,'redraw': False},
+                                     'fromcurrent': True,
+                                     'transition': {'duration':0,'easing':'quadratic-in-out'}}],},
+                     {'label': 'Pause', 'method': 'animate',
+                      'args': [[None], {'frame': {'duration': 0, 'redraw': False},
+                                        'mode':'immediate',
+                                        'transition': {'duration': 0}}],}]
+
 # %%
 
 def _update_layout(layout, **kwargs):
@@ -235,3 +252,167 @@ def swirlygram(df, n=3, trail=18, quadrants=True, **kwargs):
         layout = _quadrants(layout, x=0, y=0)
     
     return dict(data=data, layout=layout)
+
+# %%
+    
+def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False, quadrants=True, **kwargs):
+    """
+    Generalised Swirlygram with Animations & Multiple series
+    
+    Swirlygrams show the absolute level (amplitude) of, for example, a leading
+    indicator vs. the change in the indicator over n periods, as well as a tail
+    for the most recent past observations.
+    
+    My original specific case was to show the OECD CLI vs. Normalised GDP (lagged).
+    Thus if the CLI is infact leading GDP by 4-8 months the animation should show
+    both comets following each other around the plot, circling the origin.
+    
+    This function is a generalised swirlygram, meaning:
+        * Allows multiple series CLI on one chart, using buttons to change
+        * Allows an animation of the swirlygram through time
+        * Allows for a "reference series" to be animated at the same time
+    
+    INPUTS:
+        df - pd.DataFrame where each column is a seperate series of the CLI and
+              the index is a timeseries index
+        df2 - (default is None) is a dataframe of a reference series to be plotted
+              alongside the CLI in the animation. IMPORTANT NOTE, this MUST have
+              the same column headers in the same order as df or bad things happen.
+        n - periodic change (default == 3). Currently this is the absolute shift
+        lead - shift applied to df2 i.e. lead=6 will move June '18 to December '18
+        trail - length of history to show in comet tail (default==18)
+        quadrants - True (default) | False and adds coloured quadrants around origin
+        animation - False(default) | True depends if we are making an animation
+        **kwargs - mostly for updating layout titles etc... 
+    
+    NOTES:
+        * Absent df2 CLI's will follow normal colourmap
+        * Inc df2 all CLIs will be one colour & reference series another
+        * chart is forced symmetric around the origin with minimum size of 1
+        * inbuilt auto-scaling of x & y. Be careful not to build chart using series
+          of very different amplitudes (unless it's deliberate) because the chart will
+          size for the largest one and you could lose resolution on the tighter chart
+    
+    """
+    
+    ### Default Setup
+    cmap=COLOURMAP.copy()
+    layout=copy.deepcopy(DEFAULT_LAYOUT)
+    layout=_update_layout(layout, **kwargs)
+    data, frames=[], []
+    sliders = copy.deepcopy(DEFAULT_SLIDERS)
+    
+    ### Manipulate Data
+    x = (df - df.shift(n))
+    y = df
+    
+    # Handle Ref Dataframe
+    if isinstance(df2, pd.DataFrame):
+        # Where 2nd DataFrame passed, ensure indices match main df
+        # Also shift 2nd dataframe by desired lead & forward fill missing data
+        df2 = pd.concat([pd.DataFrame(index=df.index), df2.shift(lead)], axis=1, sort=False).ffill()
+        x1, y1 = (df2 - df2.shift(n)), df2
+        ref = True    # quick flag for later
+    
+    ### Append Data
+    
+    # NB/ Colours follow colourmap if NOT Ref, just use cmap[0] and cmap[1] if Ref
+    for i, c in enumerate(df.columns):
+        # MARKER for most recent observation
+        data.append(dict(type='scatter', mode='markers', showlegend=False, hoverinfo='skip',
+                    x=[x[c].iloc[-1]], y=[y[c].iloc[-1]],
+                    marker=dict(symbol='diamond', color=cmap[0 if ref else i], size=10,
+                               line={'color':'black', 'width':1}),))
+        # LINE
+        data.append(dict(type='scatter', name=c, mode='lines+markers', showlegend=True,
+                    x=x[c].iloc[-trail:],
+                    y=y[c].iloc[-trail:],
+                    line=dict(color=cmap[0 if ref else i], width=1),))
+        
+        # Reference Dataframe if provided
+        if ref:
+            # MARKER for most recent observation
+            data.append(dict(type='scatter', mode='markers', showlegend=False, hoverinfo='skip',
+                        x=[x1[c].iloc[-1]], y=[y1[c].iloc[-1]],
+                        marker=dict(symbol='diamond', color=cmap[1], size=10,
+                        line={'color':'black', 'width':1}),))
+            # LINE
+            data.append(dict(type='scatter', name=c, mode='lines+markers', showlegend=True,
+                        x=x1[c].iloc[-trail:],
+                        y=y1[c].iloc[-trail:],
+                        line=dict(color=cmap[1], width=1),))
+            
+        ## Buttons
+        # Only required if > 1 column
+        if len(df.columns) > 1:
+            if i == 0: l = len(data)                   # find no traces on 1st pass
+            visible = [False] * l * len(df.columns)    # List of False = Total No of Traces
+            visible[(i*l):(i*l)+l] = [True] * l        # Make traces of ith pass visible
+
+            button= dict(label=c, method='update', args=[{'visible': visible},])
+            layout['updatemenus'][0]['buttons'].append(button)     # append the button 
+    
+    ### Additional Layout Changes
+    
+    # Additional Button to make all visible
+    if len(df.columns) > 1:
+        visible=[True] * l * len(df.columns) 
+        button= dict(label='All', method='update', args=[{'visible': visible},])
+        layout['updatemenus'][0]['buttons'].append(button)     # append the button 
+    
+    # Symmetrical Plot around zero
+    absmax = lambda df, x=1: np.max([df.abs().max().max(), x]) * 1.05    
+    layout['xaxis']['range'] = [-absmax(x), absmax(x)]
+    layout['yaxis']['range'] = [-absmax(y), absmax(y)]
+    
+    # Rectangles of colour for each quadrant
+    if quadrants: layout = _quadrants(layout, x=0, y=0)
+            
+    ### Create Fig
+    fig = dict(data=data, layout=layout)
+    
+    ### Animations
+    if animation:
+            
+        # Need Play/Pause Buttons
+        # Using modified version of plotly example
+        playpause=copy.deepcopy(DEFAULT_PLAYPAUSE)
+        
+        # Append to layout - remembering we may already have a set of buttons in updatemenus
+        fig['layout']['updatemenus'].append({'buttons': playpause, 'type': 'buttons', 'showactive': False,
+                                             'x':0, 'xanchor':'left', 'y':0, 'yanchor':'bottom',
+                                             'direction': 'left', 'pad': {'r': 0, 't': 0},})
+        
+        ## Build Animation Slider
+        
+        # Iterate through cli adding data sets to frames for each step in animation
+        for i, v in enumerate(x.index.values[trail:-1]):
+            
+            # Complicated bit is building frame traces for each step
+            frame_traces = []
+            
+            for j, c in enumerate(df.columns):
+                # Main markers & lines
+                frame_traces.append(dict(type='scatter', x=[x.iloc[i,j]], y=[y.iloc[i,j]]))    # marker
+                frame_traces.append(dict(type='scatter', x=x.iloc[i-trail:i, j],               # line
+                                                         y=y.iloc[i-trail:i, j]))
+                
+                if ref:
+                    # Only add these if reference series required
+                    frame_traces.append(dict(type='scatter', x=[x1.iloc[i,j]], y=[y1.iloc[i,j]]))
+                    frame_traces.append(dict(type='scatter', x=x1.iloc[i-trail:i, j], y=y1.iloc[i-trail:i, j]))
+            
+            
+            # Append "frame" dictionary to frames list
+            frames.append({'name':i, 'layout':{}, 'data':frame_traces})
+
+            # Append a "step" dictionary to steps list in sliders dict
+            label = pd.to_datetime(str(v)).strftime('%m/%y')    # String Date Label
+            sliders['steps'].append({'label':label, 'method': 'animate', 
+                                     'args':[[i], {'frame': {'duration': 500, 'easing':'linear', 'redraw':False},
+                                                   'transition':{'duration': 25, 'easing': 'linear'}}],})
+            
+        fig['frames'] = frames
+        fig['layout']['sliders'] = [sliders]        # Append completed sliders dictionary to layout
+                
+    return fig
