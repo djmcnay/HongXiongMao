@@ -313,6 +313,8 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
         df2 = pd.concat([pd.DataFrame(index=df.index), df2.shift(lead)], axis=1, sort=False).ffill()
         x1, y1 = (df2 - df2.shift(n)), df2
         ref = True    # quick flag for later
+    else:
+        ref = False
     
     ### Append Data
     
