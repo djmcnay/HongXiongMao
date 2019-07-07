@@ -255,7 +255,9 @@ def swirlygram(df, n=3, trail=18, quadrants=True, **kwargs):
 
 # %%
     
-def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False, quadrants=True, **kwargs):
+def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
+                           quadrants=True, minax=[0, 0], duration=0, transition=500,
+                           **kwargs):
     """
     Generalised Swirlygram with Animations & Multiple series
     
@@ -283,6 +285,8 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
         trail - length of history to show in comet tail (default==18)
         quadrants - True (default) | False and adds coloured quadrants around origin
         animation - False(default) | True depends if we are making an animation
+        minax - default = [1, 1], minimum axis width/height
+        duration & transition - timings for animation in ms
         **kwargs - mostly for updating layout titles etc... 
     
     NOTES:
@@ -292,32 +296,30 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
         * inbuilt auto-scaling of x & y. Be careful not to build chart using series
           of very different amplitudes (unless it's deliberate) because the chart will
           size for the largest one and you could lose resolution on the tighter chart
+          
+    KNOWN PROBLEMS:
+        * Plotly animations update layout at the END of the Animation, which 
+          means we can either set the range at MAX to begin & zoom at the end
     
     """
     
     ### Default Setup
     cmap=COLOURMAP.copy()
     layout=copy.deepcopy(DEFAULT_LAYOUT)
-    layout=_update_layout(layout, **kwargs)
     data, frames=[], []
     sliders = copy.deepcopy(DEFAULT_SLIDERS)
     
     ### Manipulate Data
-    x = (df - df.shift(n))
-    y = df
+    x, y = (df - df.shift(n)), df    # x & y df for the cli series 
     
-    # Handle Ref Dataframe
-    if isinstance(df2, pd.DataFrame):
-        # Where 2nd DataFrame passed, ensure indices match main df
-        # Also shift 2nd dataframe by desired lead & forward fill missing data
+    # Where 2nd DataFrame passed, ensure indices match main df
+    # Also shift 2nd dataframe by desired lead & forward fill missing data
+    ref = True if isinstance(df2, pd.DataFrame) else False    # Flag about Ref data
+    if ref:
         df2 = pd.concat([pd.DataFrame(index=df.index), df2.shift(lead)], axis=1, sort=False).ffill()
         x1, y1 = (df2 - df2.shift(n)), df2
-        ref = True    # quick flag for later
-    else:
-        ref = False
     
     ### Append Data
-    
     # NB/ Colours follow colourmap if NOT Ref, just use cmap[0] and cmap[1] if Ref
     for i, c in enumerate(df.columns):
         # MARKER for most recent observation
@@ -355,7 +357,7 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
             layout['updatemenus'][0]['buttons'].append(button)     # append the button 
     
     ### Additional Layout Changes
-    
+
     # Additional Button to make all visible
     if len(df.columns) > 1:
         visible=[True] * l * len(df.columns) 
@@ -363,20 +365,27 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
         layout['updatemenus'][0]['buttons'].append(button)     # append the button 
     
     # Symmetrical Plot around zero
-    absmax = lambda df, x=1: np.max([df.abs().max().max(), x]) * 1.05    
-    layout['xaxis']['range'] = [-absmax(x), absmax(x)]
-    layout['yaxis']['range'] = [-absmax(y), absmax(y)]
+    # Known animation issue that layout updates at end of animation, therefore
+    # if ref we use the MAX range to start and shrink at the ANIMATION
+    absmax = lambda df, x: np.max([df.abs().max().max(), x]) * 1.05  
+    xmax = absmax(x, minax[0]) if ref else absmax(x.iloc[-trail:,:],minax[0])
+    ymax = absmax(y, minax[1]) if ref else absmax(y.iloc[-trail:,:],minax[1])
+    layout['xaxis']['range'] = [-xmax, xmax]
+    layout['yaxis']['range'] = [-ymax, ymax]
     
     # Rectangles of colour for each quadrant
     if quadrants: layout = _quadrants(layout, x=0, y=0)
-            
-    ### Create Fig
+    
+    # Kwargs update to layout
+    layout=_update_layout(layout, **kwargs)
+    
+    ### Create Fig - needs to be done prior to animations
     fig = dict(data=data, layout=layout)
     
     ### Animations
     if animation:
             
-        # Need Play/Pause Buttons
+        ## Need Play/Pause Buttons
         # Using modified version of plotly example
         playpause=copy.deepcopy(DEFAULT_PLAYPAUSE)
         
@@ -392,27 +401,30 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
             
             # Complicated bit is building frame traces for each step
             frame_traces = []
-            
             for j, c in enumerate(df.columns):
-                # Main markers & lines
-                frame_traces.append(dict(type='scatter', x=[x.iloc[i,j]], y=[y.iloc[i,j]]))    # marker
-                frame_traces.append(dict(type='scatter', x=x.iloc[i-trail:i, j],               # line
-                                                         y=y.iloc[i-trail:i, j]))
                 
+                frame_traces.append(dict(type='scatter', name='CLI',
+                                         x=[x.iloc[i,j]], y=[y.iloc[i,j]]))    # CLI marker
+                frame_traces.append(dict(type='scatter', name='CLI',
+                                         x=x.iloc[i-trail:i+1, j],             # CLI line
+                                         y=y.iloc[i-trail:i+1, j]))
+                
+                # As above if Reference series added
                 if ref:
-                    # Only add these if reference series required
-                    frame_traces.append(dict(type='scatter', x=[x1.iloc[i,j]], y=[y1.iloc[i,j]]))
-                    frame_traces.append(dict(type='scatter', x=x1.iloc[i-trail:i, j], y=y1.iloc[i-trail:i, j]))
-            
-            
+                    frame_traces.append(dict(type='scatter', name='Ref', x=[x1.iloc[i,j]], y=[y1.iloc[i,j]]))
+                    frame_traces.append(dict(type='scatter', name='Ref', x=x1.iloc[i-trail:i+1,j], y=y1.iloc[i-trail:i+1, j]))
+                    
             # Append "frame" dictionary to frames list
-            frames.append({'name':i, 'layout':{}, 'data':frame_traces})
+            # Also update layout to sensible x/y axis for most recent obs
+            xmax, ymax = absmax(x.iloc[-trail:,:],minax[0]), absmax(y.iloc[-trail:,:],minax[1])
+            frame_layout={'xaxis':{'range':[-xmax, xmax]}, 'yaxis':{'range':[-ymax, ymax]},}
+            frames.append({'name':i, 'layout':frame_layout, 'data':frame_traces})
 
             # Append a "step" dictionary to steps list in sliders dict
             label = pd.to_datetime(str(v)).strftime('%m/%y')    # String Date Label
             sliders['steps'].append({'label':label, 'method': 'animate', 
-                                     'args':[[i], {'frame': {'duration': 500, 'easing':'linear', 'redraw':False},
-                                                   'transition':{'duration': 25, 'easing': 'linear'}}],})
+                                     'args':[[i], {'frame': {'duration': duration, 'easing':'linear', 'redraw':True},
+                                                   'transition':{'duration': transition, 'easing': 'linear'}}],})
             
         fig['frames'] = frames
         fig['layout']['sliders'] = [sliders]        # Append completed sliders dictionary to layout
