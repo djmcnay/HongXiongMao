@@ -28,8 +28,9 @@ dl = quandl_hxm()
 #                 yaxis={'title':'some shit'},)
 
 
-fig = overplot.swirlygram_generalised(cli.iloc[:,0:5], gdp.iloc[:,0:5],
-                                      animation=True, minax=[1, 1])
+fig = overplot.swirlygram_generalised(cli.iloc[:,0:3], gdp.iloc[:,0:3],
+                                      animation=True, minax=[1, 1],
+                                      duration=10, transition=2000)
 
 py.plot(fig, auto_play=False)
 

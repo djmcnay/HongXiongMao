@@ -175,89 +175,11 @@ def scatter_from_dataframe(df, **kwargs):
 
     return fig
 
-# %% Swirlygrams
-    
-def swirlygram(df, n=3, trail=18, quadrants=True, **kwargs):
-    """
-    Static Swirlygram with multiple traces
-    
-    Shows the absolute level of (for example) a composite leading indicator and 
-    the change in the indictor over n periods, with a for previous observations.
-    
-    This version is STATIC and only shows the most recent Swirlygram for each
-    column in the input dataframe, with buttons to shrink the number of plots 
-    shown; seperate function being built for an animated timeseries Swirlygram.
-    
-    INPUTS:
-        df - dataframe with each column being a seperate series
-        n - periodic change (default == 3)
-             Currently this is the absolute shift, but will add percentage
-        trail - length of history to show in comet tail (default==18)
-        quadrants - True (default) | False and adds coloured quadrants around origin
-        
-    
-    DEVELOPMENTS:
-        * qudrant function to allow us to move origin about
-        * Percentage change or other x-axis stuff
-            
-    """
-    
-    ### Default Setup
-    cmap=COLOURMAP.copy()
-    layout=copy.deepcopy(DEFAULT_LAYOUT)
-    layout=_update_layout(layout, **kwargs)
-    
-    ### Manipulate Data
-    df = df.iloc[-(trail+n):,:]               # subset input df to required length
-    x = (df - df.shift(n)).iloc[-trail:,:]    # x-axis given as change
-    y = df.iloc[-trail:,:]                      # y-axis suset to length of tail
-    
-    ### Append Data
-    data=[]
-    for i, c in enumerate(df.columns):
-
-        # LINE
-        data.append(dict(type='scatter', name=c, mode='lines+markers', showlegend=True,
-                    x=x.loc[:,c], y=y.loc[:,c],
-                    line=dict(color=cmap[i], width=1),))
-            
-        # MARKER for most recent observation
-        data.append(dict(type='scatter', mode='markers', showlegend=False, 
-                    x=[x.iloc[-1,:].loc[c]], y=[y.iloc[-1,:].loc[c]],
-                    marker=dict(symbol='diamond', color=cmap[i], size=10,
-                               line={'color':'black', 'width':1}),))
-    
-        ## Buttons
-        if i == 0: l = len(data)                   # find no traces on 1st pass
-        visible = [False] * l * len(df.columns)    # List of False = Total No of Traces
-        visible[(i*l):(i*l)+l] = [True] * l        # Make traces of ith pass visible
-        
-        button= dict(label=c, method='update', args=[{'visible': visible},])
-        layout['updatemenus'][0]['buttons'].append(button)     # append the button 
-    
-    ### Additional Layout Changes
-    
-    # Additional Button to make all visible
-    visible=[True] * l * len(df.columns) 
-    button= dict(label='All', method='update', args=[{'visible': visible},])
-    layout['updatemenus'][0]['buttons'].append(button)     # append the button 
-    
-    # Symmetrical Plot around zero
-    absmax = lambda df, x=1: np.max([df.abs().max().max(), x]) * 1.05    
-    layout['xaxis']['range'] = [-absmax(x), absmax(x)]
-    layout['yaxis']['range'] = [-absmax(y), absmax(y)]
-    
-    # Rectangles of colour for each quadrant
-    if quadrants:
-        layout = _quadrants(layout, x=0, y=0)
-    
-    return dict(data=data, layout=layout)
-
 # %%
     
-def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
-                           quadrants=True, minax=[0, 0], duration=0, transition=500,
-                           **kwargs):
+def swirlygram(df, df2=None, n=3, lead=6, trail=18, animation=False,
+               quadrants=True, minax=[0, 0], duration=0, transition=500,
+               **kwargs):
     """
     Generalised Swirlygram with Animations & Multiple series
     
@@ -300,6 +222,7 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
     KNOWN PROBLEMS:
         * Plotly animations update layout at the END of the Animation, which 
           means we can either set the range at MAX to begin & zoom at the end
+          or PAUSE
     
     """
     
@@ -417,6 +340,7 @@ def swirlygram_generalised(df, df2=None, n=3, lead=6, trail=18, animation=False,
             # Append "frame" dictionary to frames list
             # Also update layout to sensible x/y axis for most recent obs
             xmax, ymax = absmax(x.iloc[-trail:,:],minax[0]), absmax(y.iloc[-trail:,:],minax[1])
+            frame_layout = {}
             frame_layout={'xaxis':{'range':[-xmax, xmax]}, 'yaxis':{'range':[-ymax, ymax]},}
             frames.append({'name':i, 'layout':frame_layout, 'data':frame_traces})
 
