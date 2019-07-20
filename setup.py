@@ -20,7 +20,7 @@ setup(
                       'scipy',
                       'sklearn',
                       'ecos', 'cvxpy',
-                      'plotly', 'plotly_express',
+                      'plotly >= 4.0',
                       'quandl', 'alpha_vantage',
                       ],
                       
