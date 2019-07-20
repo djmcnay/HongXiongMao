@@ -21,3 +21,6 @@ us_recession_watch = {
     }
 
 dl.from_tickerdict(us_recession_watch)
+
+# %%
+import hongxiongmao as hxm
