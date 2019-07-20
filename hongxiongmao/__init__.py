@@ -13,4 +13,3 @@ Created on Sat Jun 15 16:56:31 2019
 # https://towardsdatascience.com/whats-init-for-me-d70a312da583
 from hongxiongmao import pokemon
 import hongxiongmao.download
-import utilities
