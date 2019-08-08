@@ -20,3 +20,6 @@ import hongxiongmao.overplot
 # Modelling
 import hongxiongmao.correlation
 import hongxiongmao.pokemon
+
+# Optimisation
+import hongxiongmao.optimisation
