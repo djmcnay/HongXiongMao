@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 import cvxpy as cvx
 
+import matplotlib.pyplot as plt
+
 # %% MEAN VARIANCE OPTIMISER
 
 class mvo(object):
@@ -271,24 +273,30 @@ def resampled_frontier(mu, vcv, constraints=None, seed=10, steps=20):
             
     return w0.round(4), w1.round(4), stats.astype(float)
 
-# %% Fake Rtn & Risk Data
-        
-data = pd.DataFrame(index=['rtns', 'vol'])
-data['equity'] = [0.10, 0.15]
-data['credit'] = [0.08, 0.1]
-data['rates'] = [0.05, 0.06]
-data['cash'] = [0.01, 0.001]
-vcv = np.eye(len(data.loc['rtns',:]))
-np.fill_diagonal(vcv, data.loc['vol',:] ** 2) 
-mu = data.loc['rtns',:]
-ac = {'FixEq':(['equity', '>=', 0.20]), 'MaxCash':(['cash', '==', 0.01])}
+# %% TEST FUNCTION
 
-# %%
+def _test_function():
 
-#opt = mvo(mu=mu, vcv=vcv, constraints=ac)
-#x, y = opt.frontier()
-
-w0, w1, stats = resampled_frontier(mu=mu, vcv=vcv, constraints=ac, seed=1000)
-import matplotlib.pyplot as plt
-plt.plot(stats.T['vol0'], stats.T['rtn0'])
-plt.plot(stats.T['vol1'], stats.T['rtn1'])
+    # Dummy Data Set
+    data = pd.DataFrame(index=['rtns', 'vol'])
+    data['equity'] = [0.10, 0.15]
+    data['credit'] = [0.08, 0.1]
+    data['rates'] = [0.05, 0.06]
+    data['cash'] = [0.01, 0.001]
+    
+    # Expected Returns
+    mu = data.loc['rtns',:]
+    
+    # VCV
+    vcv = np.eye(len(data.loc['rtns',:]))
+    np.fill_diagonal(vcv, data.loc['vol',:] ** 2) 
+    
+    # Asset Constraints
+    ac = {'FixEq':(['equity', '>=', 0.20]), 'MaxCash':(['cash', '==', 0.01])}
+    
+    w0, w1, stats = resampled_frontier(mu=mu, vcv=vcv, constraints=ac, seed=1000)
+    
+    plt.plot(stats.T['vol0'], stats.T['rtn0'])
+    plt.plot(stats.T['vol1'], stats.T['rtn1'])
+    
+    return w0, w1, stats
