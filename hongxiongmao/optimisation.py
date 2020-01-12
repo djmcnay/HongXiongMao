@@ -23,8 +23,9 @@ class mvo(object):
     INPUTS:
         mu - vector of mean returns; preferably pd.DataFrame but np.array accepted
         vcv - variance-covariance matrix as np.matrix
-        asset_constraints - asset class level constraints as dict; details below
-        
+        asset_constraints - asset class level constraints as dict;
+            input of form {'name':([universe], operator, value)}
+             
     """
     
     def __init__(self, mu=None, vcv=None, asset_constraints=None):
@@ -239,6 +240,17 @@ def resampled_frontier(mu, vcv, constraints=None, seed=10, steps=20):
     where higher vol solutions aren't attainable. Another issue is that we don't
     have fixed vol points on the frontier which can be annoying.
     
+    INPUTS:
+        mu - expected returns as pd.DataFrame with asset names as index
+        vcv - covariance matrix
+        constraints - dictionary of asset class level constraints
+        seed - No of Monte-Carlo simulations
+        steps - intervals between min vol & max rtn portfolios
+        
+    OUTPUT:
+        w0 - pd.DataFrame of weights of the "true frontier"
+        w1 - resampled DataFrame of weights
+        stats - risk & rtn stats for w0 & w1
     """
     
     i, no_soln = (0, 0)
@@ -273,8 +285,9 @@ def resampled_frontier(mu, vcv, constraints=None, seed=10, steps=20):
             
     return w0.round(4), w1.round(4), stats.astype(float)
 
-# %% TEST FUNCTION
 
+# %% TEST FUNCTION
+    
 def _test_function():
 
     # Dummy Data Set
@@ -292,11 +305,11 @@ def _test_function():
     np.fill_diagonal(vcv, data.loc['vol',:] ** 2) 
     
     # Asset Constraints
-    ac = {'FixEq':(['equity', '>=', 0.20]), 'MaxCash':(['cash', '==', 0.01])}
+    #ac = {'FixEq':(['equity', '>=', 0.20]), 'MaxCash':(['cash', '==', 0.01])}
     
-    w0, w1, stats = resampled_frontier(mu=mu, vcv=vcv, constraints=ac, seed=1000)
+    #w0, w1, stats = resampled_frontier(mu=mu, vcv=vcv, constraints=ac, seed=100)
     
-    plt.plot(stats.T['vol0'], stats.T['rtn0'])
-    plt.plot(stats.T['vol1'], stats.T['rtn1'])
+    #plt.plot(stats.T['vol0'], stats.T['rtn0'])
+    #plt.plot(stats.T['vol1'], stats.T['rtn1'])
     
-    return w0, w1, stats
+    return mu   #w0, w1, stats

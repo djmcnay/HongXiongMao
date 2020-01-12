@@ -8,19 +8,21 @@ import numpy as np
 import pandas as pd
 import plotly.offline as py
 
-import overplot
-from download import quandl_hxm
-dl = quandl_hxm()
-
 # %%
 
-us_recession_watch = {
-    'Recession_Probability':dict(ticker='FRED/RECPROUSM156N', name=''),
-    'ISM':dict(ticker='ISM/MAN_PMI', name='ISM PMI Composite'),
-    '10yr':dict(ticker='USTREASURY/YIELD', fields=['10 YR'], name='ISM PMI Composite')
+#import hongxiongmao as hxm
+
+#dl = hxm.download.quandl_hxm(API='-gP4AZzsup26hKNAcsv2')
+
+td = {
+    'SPX':{'ticker':'CHRIS/CME_SP1',},
+    'UST':{'ticker':'CHRIS/CME_US1', 'fields':['Open', 'Settle']},
     }
 
-dl.from_tickerdict(us_recession_watch)
 
 # %%
-import hongxiongmao as hxm
+
+import download 
+
+dl2 = download.quandl_hxm(API='-gP4AZzsup26hKNAcsv2')
+px = dl2.from_tickerdict(td)

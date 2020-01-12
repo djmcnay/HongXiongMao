@@ -114,18 +114,42 @@ class quandl_hxm(object):
             
         """
         
+        from collections import Counter 
+        
         # Set ticker dictionary from internal attributes if string provided
         td = getattr(self, td) if isinstance(td, str) else td
         
         # List of tickers from ticker dictionary
         tickers = [td[k]['ticker'] for k in td]
         
-        # Make Call
-        x = self.timeseries(tickers=tickers, **kwargs)
+        # We need to establish if we are downloading consistent fields
+        # 1st we create a list of fields, appending [] if non specified
+        f = []
+        for t in td:
+            if 'fields' in td[t].keys(): f.append(td[t]['fields'])
+            else: f.append([])
+        
+        # 2nd we see if different tickers have unique field combinations
+        unique = len(Counter([tuple(i) for i in f]))
+           
+        # If all field entries are the same then we can make a single call
+        # otherwise we call each ticker/field combination individually
+        if unique == 1 and f[0] != []:
+            if f[0] == []: x = self.timeseries(tickers=tickers, **kwargs)
+            else: x = self.timeseries(tickers=tickers, fields=f[0], **kwargs)
+        else:
+            # loop through making call and appending out output dataframe
+            for i, t in enumerate(td):
+                if f[i] == []: c = self.timeseries(tickers=tickers[i], **kwargs)
+                else: c = self.timeseries(tickers=tickers[i], fields=f[i], **kwargs)
+                
+                # Merge current call with previous calls
+                if i == 0: x = c
+                else: x = utilities.df_merger(x, c)
         
         # Rename columns to dictionary keys
         # Currently only works if 1 field per ticker
-        if x.shape[1] == 16:
+        if x.shape[1] == len(tickers):
             x.columns = list(td.keys())
         
         return x
