@@ -112,6 +112,8 @@ class quandl_hxm(object):
                  string referes to an attribute that is a pre-loaded dictionary
             kwargs - for timeseries call; further details look at that function
             
+        Function returns pd.Dataframe with Columns name the dictionary keys.
+        Where there are multiple fields the col name is KEY_FIELD
         """
         
         from collections import Counter 
@@ -137,21 +139,21 @@ class quandl_hxm(object):
         if unique == 1 and f[0] != []:
             if f[0] == []: x = self.timeseries(tickers=tickers, **kwargs)
             else: x = self.timeseries(tickers=tickers, fields=f[0], **kwargs)
+            x.columns = list(td.keys())    # rename columns to dictionary keys
         else:
             # loop through making call and appending out output dataframe
             for i, t in enumerate(td):
-                if f[i] == []: c = self.timeseries(tickers=tickers[i], **kwargs)
-                else: c = self.timeseries(tickers=tickers[i], fields=f[i], **kwargs)
+                
+                # Set column name to TICKER or TICKER_FIELD
+                name = list(td.keys())[i]
+                
+                if f[i] == []: c = self.timeseries(tickers=tickers[i], name=name, **kwargs)
+                else: c = self.timeseries(tickers=tickers[i], fields=f[i], name=name, **kwargs)
                 
                 # Merge current call with previous calls
                 if i == 0: x = c
                 else: x = utilities.df_merger(x, c)
-        
-        # Rename columns to dictionary keys
-        # Currently only works if 1 field per ticker
-        if x.shape[1] == len(tickers):
-            x.columns = list(td.keys())
-        
+    
         return x
     
     # %% TIMESERIES DOWNLOAD
@@ -159,6 +161,7 @@ class quandl_hxm(object):
     def timeseries(self, tickers, fields=[], **kwargs):
         """
         Quandl Timeseries
+        
         """
         
         # Ensure tickers is a list & update download options
@@ -202,9 +205,18 @@ class quandl_hxm(object):
                         start_date = start_date,
                         end_date = end_date)
         
-        # If only 1 field requested then adjust column names to just be tickers
-        df.columns = tickers if n == 1 else df.columns
-        
+        # If a name is requested, rename columns otherwise use ticker
+        # Where multiple fields use TICKER_FIELD as column name
+        name = kwargs['name'] if 'name' in kwargs.keys() else tickers
+        name = [name] if isinstance(name, str) else name
+ 
+        if n in [0,1]:
+            df.columns = name
+        else:
+            vn, zippy = [], list(zip(name * len(fields), fields))
+            [vn.append('_'.join(j)) for j in zippy]
+            df.columns = vn
+
         return df
     
     # %% Quandl Commodity Curves
