@@ -69,7 +69,8 @@ def _df_merger_helper_func(x, blend='mean'):
 
 # %% DATE FUNCTIONS
         
-def relative_date(r='12m', end_date='today', date_format='%Y-%m-%d', as_string=False):
+def relative_date(r='12m', end_date='today', date_format='%Y-%m-%d',
+                  as_string=False, unixtimestamp=False):
     """
     Relative Date function
     
@@ -80,7 +81,8 @@ def relative_date(r='12m', end_date='today', date_format='%Y-%m-%d', as_string=F
         end_date - 'today' (default), date string, datetime object
         date_format - input format of string & output if requested
         as_string - True | False (default) 
-                    decides if output is converted to string from datetime   
+                    decides if output is converted to string from datetime
+        unixtimestamp - converts datetime to a unixtimestamp at the end
     """
     
     # Create Datetime object end_date based on supplied end_date
@@ -104,7 +106,10 @@ def relative_date(r='12m', end_date='today', date_format='%Y-%m-%d', as_string=F
     if as_string is True:
         start_date = dt.datetime.strftime(start_date, date_format)
         end_date = dt.datetime.strftime(end_date, date_format)
-
+    elif unixtimestamp is True:
+        start_date = dt.datetime.timestamp(start_date)
+        end_date = dt.datetime.timestamp(end_date)
+    
     return start_date, end_date
 
 # Daily-to-Weekly

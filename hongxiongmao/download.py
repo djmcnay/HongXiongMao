@@ -6,6 +6,7 @@ HongXiongMao Download Classes
 Provides high level wrappers for data providers, currently:
     1. Quandl
     2. AlphaVantage
+    3. Finnhub
     
 """
 
@@ -14,6 +15,10 @@ Provides high level wrappers for data providers, currently:
 import pandas as pd
 from time import sleep
 from hongxiongmao import utilities        # From HXM
+
+# %% Finnhub
+
+
 
 # %% QUANDL
 
