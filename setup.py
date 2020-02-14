@@ -19,7 +19,8 @@ setup(
     install_requires=['sklearn',
                       'ecos', 'cvxpy',
                       'plotly >= 4.0',
-                      'quandl', 'alpha_vantage'
+                      'quandl', 'alpha_vantage',
+                      'talib',
                       ],
                       
     # Optional Dependencies
