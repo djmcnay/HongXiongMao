@@ -16,12 +16,9 @@ setup(
     packages=find_packages(),
     
     # Required Dependencies
-    install_requires=['pandas',
-                      'scipy',
-                      'sklearn',
-                      'ecos', 'cvxpy',
+    install_requires=['ecos', 'cvxpy',
                       'plotly >= 4.0',
-                      'quandl', 'alpha_vantage',
+                      'quandl', 'alpha_vantage', 'finnhub',
                       ],
                       
     # Optional Dependencies
