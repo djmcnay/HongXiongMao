@@ -18,7 +18,7 @@ setup(
     # Required Dependencies
     install_requires=['ecos', 'cvxpy',
                       'plotly >= 4.0',
-                      'quandl', 'alpha_vantage', 'finnhub',
+                      'quandl', 'alpha_vantage'
                       ],
                       
     # Optional Dependencies
