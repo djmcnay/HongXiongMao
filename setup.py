@@ -16,7 +16,8 @@ setup(
     packages=find_packages(),
     
     # Required Dependencies
-    install_requires=['ecos', 'cvxpy',
+    install_requires=['sklearn',
+                      'ecos', 'cvxpy',
                       'plotly >= 4.0',
                       'quandl', 'alpha_vantage'
                       ],
