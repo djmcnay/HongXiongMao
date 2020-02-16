@@ -18,6 +18,105 @@ from hongxiongmao import utilities        # From HXM
 
 # %% Finnhub
 
+class finnhub_hxm(object):
+    ''' Finnhub.io HongXiongMao Download Class
+
+    Wrapper functions provide additional functionality to finnhub package
+    - multiple tickers
+    - more logical date inputs i.e. datetime or relative dates
+
+    If a wrapper function hasn't been built yet, we can still access the finnhub
+    functions via finnhub_hxm.client... 
+
+    List of examples of the core module:
+      https://github.com/s0h3ck/finnhub-api-python-client/blob/master/examples/examples.py
+    '''
+    
+    from finnhub import client as Finnhub
+    from datetime import datetime as Datetime
+    from hongxiongmao import utilities as hxm
+    
+    def __init__(self, **kwargs):
+        if 'API' in kwargs.keys():
+            self.API_KEY = kwargs['API']
+        else:
+            from config import API_FINNHUB as API_KEY
+            self.API_KEY = API_KEY
+        self.client = self.Finnhub.Client(api_key=self.API_KEY)
+
+    def _timeseries_json2dataframe(self, json, idx='t', drop=['s']):
+      ''' Utility function to convert finnhub json output to timeseries dataframe 
+      - Finnhub output times as UNIX timestamps, which we convert to datetime
+      - Outputs dataframe with timeseries index and columns from each JSON key
+      - drop allows us to remove columns we don't actually want '''  
+      date_idx = [self.Datetime.fromtimestamp(t) for t in json[idx]]
+      df = pd.DataFrame(index=date_idx)
+      for k in json.keys(): df[k] = json[k]
+      return df.drop([idx] + drop, axis=1)
+
+    def _output_multi_ts2dict(self, out_dict, df, ticker, fields):
+      ''' Utility function to populate an output dict from multiple timeseries
+
+      Assumes df is a timeseries dataframe download. Function takes each field 
+      from df, given by column name, and appends to dataframes in output dict.
+      - If fields == [] assume all fields from download dataframe required.
+      - Similarly if out_dict has no keys we set them as the fields '''
+
+      # set fields if empty list provided - use all fields from download
+      # this should already have been updated to remove stuff
+      fields = df.keys() if fields == [] else fields
+
+      # If empty output dictionary passed, add fields as keys
+      if not isinstance(out_dict, dict) or len(out_dict.keys()) == 0:
+        out_dict = {f:pd.DataFrame() for f in fields}
+
+      # iterate through each field - pulling a series from pull request
+      # if df associated to field is empty setup dataframe; otherwise append
+      for f in fields:
+        x = df[f].to_frame(name=ticker)    # pull ts df of required field          
+        if out_dict[f].empty: out_dict[f] = x
+        else: out_dict[f] = self.hxm.df_merger(out_dict[f], x)
+
+      return out_dict
+
+    def OHLC(self, tickers, start_date='-1y', period='M', fields=['c'], **kwargs):
+      ''' Timeseries Stock Data download
+
+      finnhub wrapper pulls candle (OHLC) data one ticker at a time and outputs
+      a json dictionary. We add multiple-tickers here and output as a dataframe.
+      We also include relative date functionality.
+
+      INPUTS:
+        tickers - [list] or string for single ticker
+        start_date - relative reference to end_date (default today) i.e -5y
+        periods - (called resolution in finnhub) is frequency D, W, M
+        fields - ['c'(default)]; set to []
+
+      DEVELOPMENTS:
+        - add end dates that aren't today '''
+      
+      # Calc relative datetimes as UNIX timestamps; Finnhub REQUIRES Integers
+      rel_dates = utilities.relative_date(r=start_date, unixtimestamp=True)
+      start_date, end_date = [int(i) for i in rel_dates]
+
+      # ensure ticker is a list if only one provided
+      tickers = [tickers] if isinstance(tickers, str) else tickers
+      output = {}
+
+      # Iterate through tickers & pull data
+      for i, t in enumerate(tickers):
+        
+        # Pull stock data & convert to dataframe (using homemade function)
+        # finnhub will return key s == 'no_data' if incorrect ticker supplied
+        x = self.client.stock_candle(symbol=t, resolution=period, **{'from':start_date, 'to': end_date})
+        if x['s'] == 'no_data': continue
+        else: x = self._timeseries_json2dataframe(x)
+
+        # Update output dictionary
+        if len(tickers) == 1: output = x
+        else: output = self._output_multi_ts2dict(output, x, t, fields)
+
+      return output
 
 
 # %% QUANDL
