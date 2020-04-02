@@ -32,7 +32,7 @@ class finnhub_hxm(object):
       https://github.com/s0h3ck/finnhub-api-python-client/blob/master/examples/examples.py
     '''
     
-    from finnhub import client as Finnhub
+    #from finnhub import client as Finnhub
     from datetime import datetime as Datetime
     from hongxiongmao import utilities as hxm
     
