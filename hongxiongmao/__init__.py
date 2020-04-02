@@ -13,6 +13,7 @@ HongXiongMao
 # General
 import hongxiongmao.utilities
 import hongxiongmao.download
+import hongxiongmao.config
 
 # Plotting
 import hongxiongmao.overplot
@@ -23,3 +24,4 @@ import hongxiongmao.pokemon
 
 # Optimisation
 import hongxiongmao.optimisation
+

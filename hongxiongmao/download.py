@@ -118,7 +118,6 @@ class finnhub_hxm(object):
 
       return output
 
-
 # %% QUANDL
 
 class quandl_hxm(object):

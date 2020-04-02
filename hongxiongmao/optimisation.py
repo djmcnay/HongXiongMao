@@ -210,8 +210,7 @@ class mvo(object):
 # %% OPTIMISE OVER EFFICIENT FRONTIER  
         
 def mvo_frontier(mu, vcv, constraints=None, method='vol_linspace', **kwargs):
-    """
-    Mean Variance Efficient Frontier
+    """ Mean Variance Efficient Frontier
     - One liner func to setup optimisation, solve over frontier & output data
     - Can be achieved with 4 lines of code & mvo class """
     opt = mvo(mu=mu, vcv=vcv, asset_constraints=constraints)
