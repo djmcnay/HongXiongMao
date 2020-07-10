@@ -7,7 +7,6 @@ Series of functions for solving dividend discount model problems. Primarily
 - dividend_discount_model_irr() is a sovler for given px, divident stream & G
 - multi_stage_irr() is a 3-stage model which estimates g = ROE * (1-PO)
 
-
 """
 
 # %% REQUIRED PACKAGES
